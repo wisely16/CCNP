@@ -1,0 +1,67 @@
+@TELNET-->cucm only
+CONF T
+enable secret pass
+no logging console 
+no ip domain lookup
+line vty 0 14
+no login
+exec-timeout 0 0
+
+int vlan 1
+no shut
+ip add 1.0.0.8 255.0.0.0
+!!ip add 10.11.10.5 255.255.255.0 seco
+end
+
+@acsw-->top switch
+CONF T
+hostname ACSW
+enable secret pass
+no logging console
+no ip domain-lookup
+line vty 0 14
+no login
+exec-timeout 0 0
+int gi 0/1
+no switchport 
+no shut
+ip add 1.0.0.6 255.0.0.0
+do wr
+
+CoreTaas-->gitna
+CONF T
+hostname CoreTaas
+enable secret pass
+no logging console
+no ip domain-lookup
+line vty 0 14
+no login
+exec-timeout 0 0
+int gi 0/1
+no switchport 
+no shut
+ip add 1.0.0.4 255.0.0.0
+do wr
+
+CONF T
+hostname CoreBaba
+enable secret pass
+no logging console
+no ip domain-lookup
+line vty 0 14
+no login
+exec-timeout 0 0
+int gi 0/1
+no switchport 
+no shut
+ip add 1.0.0.2 255.0.0.0
+do wr
+
+
+conf t
+ip host ac 1.0.0.6
+ip host ct 1.0.0.4
+ip host cb 1.0.0.2
+ip host tn 1.0.0.8
+
+@pc

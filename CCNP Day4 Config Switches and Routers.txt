@@ -1,0 +1,158 @@
+PC: 99.0.0.10 /24
+ 127.0.0.1
+
+	PC: FA 0/1 TAAS
+
+A1:
+config t
+hostname A1
+enable secret pass
+no logging console
+no ip domain-lookup
+spanning-tree mode pvst
+no vlan 2-100
+default int range fa 0/1-12
+line cons 0
+ exec-timeout 0 0
+ no login
+line vty 0 14
+ exec-timeout 0 0
+ no login
+int gi 0/1
+ no switchport
+ ip add 99.0.0.2 255.255.255.0
+do wr
+
+	//cmd: ping 99.0.0.10
+
+
+wr
+
+telnet 99.0.0.2
+sh spanning-tree vlan 1
+wr	//dapat may ieee
+
+//lipat console sa C1
+
+
+@@@@@@
+C1:
+config t
+hostname C1
+enable secret pass
+no logging console
+no ip domain-lookup
+spanning-tree mode pvst
+no vlan 2-100
+default int range fa 0/1-12
+line cons 0
+ exec-timeout 0 0
+ no login
+line vty 0 14
+ exec-timeout 0 0
+ no login
+int gi 0/1
+ no shut
+ no switchport
+ ip add 99.0.0.3 255.255.255.0
+ do wr
+ 
+sh spanning-tree vlan 1
+
+
+@@@@@@@
+C2:
+config t
+hostname C2
+enable secret pass
+no logging console
+no ip domain-lookup
+spanning-tree mode pvst
+no vlan 2-100
+default int range fa 0/1-12
+line cons 0
+ exec-timeout 0 0
+ no login
+line vty 0 14
+ exec-timeout 0 0
+ no login
+int gi 0/1
+ no shut
+ no switchport
+ ip add 99.0.0.4 255.255.255.0
+ do wr
+ 
+sh spanning-tree vlan 
+
+
+@@@@@EDGE
+config t
+hostname R2
+enable secret pass
+no logging console
+no ip domain-lookup
+line cons 0
+ exec-timeout 0 0
+ no login
+line vty 0 14
+ transport input all
+ exec-timeout 0 0
+ no login
+int gi 0
+ ip add 99.0.0.6 255.255.255.0
+ no shut
+ do wr
+ 
+ 
+ 
+@@@@@@
+config t
+hostname R1
+enable secret pass
+no logging console
+no ip domain-lookup
+line cons 0
+ exec-timeout 0 0
+ no login
+line aux 0
+ exec-timeout 0 0
+ no login
+line vty 0 14
+ transport input all
+ exec-timeout 0 0
+ no login
+ 
+int gi 0
+ ip add 99.0.0.5 255.255.255.0
+ no shut
+ do wr
+  
+ 
+ 
+
+task 1
+r2
+conf t
+int gi0/0/1
+ip add dhcp 
+no shut
+
+r1
+conf t
+int gi0/0/1
+ip add dhcp 
+no shut
+
+
+r1
+conf t
+int gi0/0/0
+ip add 10.1.0.1 255.255.255.0
+no shut
+
+r2
+conf t
+int gi0/0/0
+ip add 10.1.0.2 255.255.255.0 
+no shut
+do ping 10.1.0.1
